@@ -39,11 +39,9 @@ import bscroll from "better-scroll"
          
         this.$emit("backtop",position)
       }),
-      //3.监听上拉加载
+      //3.监听上拉加载 但是只会加载一次
       this.scroll.on('pullingUp', () => {
           this.$emit('pullingUp')})
-
-      console.log(this.scroll)
    },
    methods: {
      backtop(x, y, time = 300){
@@ -57,7 +55,6 @@ import bscroll from "better-scroll"
      //刷新可滚动区域的高度
      refresh(){
        this.scroll  && this.scroll.refresh()
-      console.log("重新加载~")
      }
    },
   }

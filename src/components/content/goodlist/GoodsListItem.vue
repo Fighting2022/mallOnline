@@ -1,7 +1,7 @@
 <template>
-  <div class="goods-item" >
-    <a :href="item.clientUrl">
-      <img :src="item.show.img" alt="" @load="imageLoad" />
+  <div class="goods-item" @click="goodsclick">
+    <a>
+      <img :src="showimage" alt="" @load="imageLoad" />
     </a>
     <div class="title">{{ item.title }}</div>
     <div class="info">
@@ -22,10 +22,19 @@ export default {
       },
     },
   },
+  computed: {
+    showimage() {
+      return this.item.image || this.item.show.img;
+    },
+  },
   methods: {
-    imageLoad(){
-      this.$bus.$emit("imageloaded")
-    }
+    imageLoad() {
+      this.$bus.$emit("imageloaded");
+    },
+    goodsclick() {
+      console.log("图片被点击了~~~");
+      this.$router.push("./detail/" + this.item.iid);
+    },
   },
 };
 </script>
@@ -39,7 +48,7 @@ export default {
   width: 100%;
   border-radius: 5px;
 }
-.goods-item .title{
+.goods-item .title {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -47,16 +56,16 @@ export default {
   text-overflow: ellipsis;
 }
 
-.goods-item  .info{
+.goods-item .info {
   margin: 5px 0;
   text-align: center;
 }
 
-.goods-item  .info .price{
+.goods-item .info .price {
   color: var(--color-tint);
 }
 
-.goods-item  .info .collect::before{
+.goods-item .info .collect::before {
   content: "";
   display: inline-block;
   width: 14px;
@@ -65,5 +74,4 @@ export default {
   background-image: url(../../../assets/img/common/collect.svg);
   background-size: 100%;
 }
-
 </style>

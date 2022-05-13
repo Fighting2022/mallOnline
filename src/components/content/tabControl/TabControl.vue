@@ -35,10 +35,8 @@
 
 <style scoped>
   .tab-control{
-    position: static;
-    top: 44px;
     display: flex;
-    padding-bottom: 10px;
+    margin-bottom: 5px;
     text-align: center;
     line-height: 40px;
   }

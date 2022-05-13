@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from '../views/home/home.vue'
+import Home from '../views/home/home.vue';
+
+
 Vue.use(VueRouter);
 
 //创建路由对象
@@ -28,6 +30,10 @@ const routers = [
   {
     path: "/profile",
     component: () => import("../views/profile/profile.vue")
+  },
+  {
+    path: "/detail/:iid",
+    component: () => import("../views/detail/Detail.vue")
   }
 ];
 
