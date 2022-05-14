@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-area" v-if="Object.keys(UserComment[0]).length !== 0" >
+  <div class="comment-area" v-if="Object.keys(UserComment).length !== 0" >
       <div class="top">
         <span >用户评价</span>
         <span>更多</span>

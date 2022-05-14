@@ -45,6 +45,8 @@ import Scroll from "../../components/common/scroll/Scroll.vue";
 import BackTop from "../../components/content/backtop/BackTop.vue";
 
 import { getHomeMulitidata, getHomeGoods } from "../../network/home";
+import {itemListenerMixin } from "../../common/mixin"
+
 
 export default {
   name: "home",
@@ -58,6 +60,7 @@ export default {
     Scroll,
     BackTop,
   },
+  mixins:[itemListenerMixin],
   data() {
     return {
       banners: [],
@@ -83,15 +86,6 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-  mounted() {
-    //3.监听图片是否加载完成
-    const refresh = this.debounce(this.$refs.scroll.refresh, 200);
-
-    this.$bus.$on("imageloaded", () => {
-      refresh();
-    });
-  },
-
   // 进入时调用
   activated() {
     this.$refs.scroll.y = this.saveY;
@@ -99,7 +93,12 @@ export default {
   },
   //离开时调用
   deactivated() {
+    //保存Y的值
     this.saveY = this.$refs.scroll.y;
+
+    //取消全局事件的监听
+    this.$bus.$off("imageloaded", this.itemImgListener
+    )
   },
 
   computed: {
@@ -107,22 +106,19 @@ export default {
       return this.goods[this.currenType].list;
     },
   },
+  mounted(){
+  
+    //解决两个tabControl选中状态不一致的问题
+    this.$refs.control1.currentIndex = this.index;
+    this.$refs.control2.currentIndex = this.index;
+  },
+
   methods: {
     //监听tabcontrol的位置
     bannerimgloadedfn() {
       this.tabcontrol = this.$refs.control2.$el.offsetTop;
     },
 
-    //封装防抖函数
-    debounce(fn, delay) {
-      let timer = null;
-      return function (...arg) {
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-          fn.call(this, ...arg);
-        }, delay);
-      };
-    },
     //事件监听
     tabClick(index) {
       switch (index) {
@@ -136,8 +132,7 @@ export default {
           this.currenType = "sell";
           break;
       }
-      this.$refs.control1.currentIndex = index;
-      this.$refs.control2.currentIndex = index;
+
     },
 
     //监听回到顶部按钮
@@ -195,7 +190,6 @@ export default {
   bottom: 49px;
   right: 0;
   left: 0;
-  background: red;
 }
 .fixed {
   position: relative;

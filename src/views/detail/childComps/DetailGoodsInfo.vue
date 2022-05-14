@@ -1,7 +1,7 @@
 <template>
   <div class="goods-info" v-if="DetailImag.length !== 0">
-    <div v-for="item in DetailImag[0].list" :key="item.id">
-      <img :src="item" alt="" />
+    <div v-for="item in DetailImag[0].list" :key="item.id" >
+      <img :src="item" alt="" @load="imgloaded" />
     </div>
   </div>
 </template>
@@ -17,6 +17,11 @@ export default {
       },
     },
   },
+  methods:{
+    imgloaded(){
+      this.$emit("imgloaded")
+    }
+  }
 };
 </script>
 

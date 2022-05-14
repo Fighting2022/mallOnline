@@ -18,5 +18,6 @@
    bottom: 0;
    display: flex;
    background-color: #f5f5f5;
+   z-index: 50;
   }
 </style>

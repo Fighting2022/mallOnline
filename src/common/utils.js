@@ -1,12 +1,12 @@
-     export function debounce(func, delay=50) {
-  let timer = null
-  return function (...args) {
-    if (timer) clearTimeout(timer)
-    timer = setTimeout(() => {
-      func.apply(this, args)
-    }, delay)
-  }
-}
+export function debounce(fn, delay) {
+      let timer = null;
+      return function (...arg) {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          fn.call(this, ...arg);
+        }, delay);
+      }
+    }
 
 export function formatDate(date, fmt) {
   // 1、获取年份

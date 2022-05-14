@@ -19,7 +19,6 @@
     height: 40px;
     z-index: 20;
   }
-
   .backtop img{
     width: 100%;
     height: 100%;
