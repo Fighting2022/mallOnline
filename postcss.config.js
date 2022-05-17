@@ -9,6 +9,7 @@ module.exports = {
       selectorBlackList: ['ignore', 'tab-bar', 'tab-bar-item'], // 指定不转换为视窗单位的类名，
       minPixelValue: 1, // 默认值1，小于或等于1px则不进行转换
       mediaQuery: false, // 是否在媒体查询的css代码中也进行转换，默认false,允许在媒体查询中转换‘px’
+      exclude:[/TabBar/]
     }
   }
 }

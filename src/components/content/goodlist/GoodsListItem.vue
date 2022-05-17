@@ -5,7 +5,7 @@
     </a>
     <div class="title">{{ item.title }}</div>
     <div class="info">
-      <span class="price">{{ item.price }}</span>
+      <span class="price">¥{{ item.price }}</span>
       <span class="collect">{{ item.cfav }}</span>
     </div>
   </div>
@@ -61,6 +61,7 @@ export default {
 }
 
 .goods-item .info .price {
+  font-weight: 700;
   color: var(--color-tint);
 }
 

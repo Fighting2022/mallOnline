@@ -170,6 +170,7 @@ export default {
 
 <style scoped>
 .home-nav {
+  font-weight: 500;
   color: #fff;
   background-color: var(--color-tint);
 }
