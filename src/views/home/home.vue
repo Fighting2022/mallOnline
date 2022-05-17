@@ -45,8 +45,7 @@ import Scroll from "../../components/common/scroll/Scroll.vue";
 import BackTop from "../../components/content/backtop/BackTop.vue";
 
 import { getHomeMulitidata, getHomeGoods } from "../../network/home";
-import {itemListenerMixin } from "../../common/mixin"
-
+import { itemListenerMixin } from "../../common/mixin";
 
 export default {
   name: "home",
@@ -60,7 +59,7 @@ export default {
     Scroll,
     BackTop,
   },
-  mixins:[itemListenerMixin],
+  mixins: [itemListenerMixin],
   data() {
     return {
       banners: [],
@@ -97,8 +96,7 @@ export default {
     this.saveY = this.$refs.scroll.y;
 
     //取消全局事件的监听
-    this.$bus.$off("imageloaded", this.itemImgListener
-    )
+    this.$bus.$off("imageloaded", this.itemImgListener);
   },
 
   computed: {
@@ -106,8 +104,8 @@ export default {
       return this.goods[this.currenType].list;
     },
   },
-  mounted(){
-  
+
+  mounted() {
     //解决两个tabControl选中状态不一致的问题
     this.$refs.control1.currentIndex = this.index;
     this.$refs.control2.currentIndex = this.index;
@@ -132,7 +130,6 @@ export default {
           this.currenType = "sell";
           break;
       }
-
     },
 
     //监听回到顶部按钮
@@ -165,7 +162,6 @@ export default {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
         this.$refs.scroll.finishPullUp();
-        console.log(res)
       });
     },
   },

@@ -54,7 +54,7 @@ export default {
     //刷新可滚动区域的高度
     refresh() {
       this.scroll && this.scroll.refresh();
-      console.log("我把页面刷新了~~")
+   
     },
   },
 };

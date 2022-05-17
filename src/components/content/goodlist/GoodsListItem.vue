@@ -32,7 +32,6 @@ export default {
       this.$bus.$emit("imageloaded");
     },
     goodsclick() {
-      console.log("图片被点击了~~~");
       this.$router.push("./detail/" + this.item.iid);
     },
   },

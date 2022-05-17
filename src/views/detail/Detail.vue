@@ -1,25 +1,31 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="nav-bar"></detail-nav-bar>
-    <scroll 
-           class="scroll" 
-           :probeType="3" 
-           @backtop="contenbacktop"
-           ref="scroll">
+    <detail-nav-bar
+      class="nav-bar"
+      @tabcontronlclick="tabcontronlclick"
+      ref="navbar"
+    ></detail-nav-bar>
+    <scroll class="scroll" :probeType="3" @backtop="contenbacktop" ref="scroll">
       <detail-swiper :topImages="topImages"></detail-swiper>
       <detail-base-info :Goods="Goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
       <detail-desc :Desc="Desc"></detail-desc>
-      <detail-goods-info :DetailImag="DetailImag" @imgloaded="imgloaded"></detail-goods-info>
+      <detail-goods-info
+        :DetailImag="DetailImag"
+        @imgloaded="imgloaded"
+      ></detail-goods-info>
       <detail-params-info
         :GoodsParam="GoodsParam"
         ref="goodsparams"
       ></detail-params-info>
-      <detail-goods-comment :UserComment="UserComment"></detail-goods-comment>
-      <goods-list :goods="RecommendData"></goods-list>
+      <detail-goods-comment
+        :UserComment="UserComment"
+        ref="comment"
+      ></detail-goods-comment>
+      <goods-list :goods="RecommendData" ref="recommend"></goods-list>
     </scroll>
     <back-top v-show="isshow"></back-top>
-    <detail-bottom-bar></detail-bottom-bar>
+    <detail-bottom-bar @addcart="addtocart"></detail-bottom-bar>
   </div>
 </template>
 
@@ -37,7 +43,9 @@ import Scroll from "../../components/common/scroll/Scroll.vue";
 import DetailBottomBar from "./childComps/DetailBottomBar.vue";
 import BackTop from "../../components/content/backtop/BackTop.vue";
 
-import {itemListenerMixin } from "../../common/mixin"
+import { itemListenerMixin } from "../../common/mixin";
+import { debounce } from "../../common/utils";
+import { mapActions } from "vuex";
 import {
   getData,
   Shop,
@@ -62,7 +70,7 @@ export default {
     DetailBottomBar,
     BackTop,
   },
-  mixins:[itemListenerMixin],
+  mixins: [itemListenerMixin],
   data() {
     return {
       iid: null,
@@ -78,22 +86,76 @@ export default {
       ParamsY: 0,
       //导航按钮展示数据
       isshow: false,
- 
+      themescolltoY: [],
+      scrollYdebounceFn: null,
+      currentIndex: 0,
     };
   },
   methods: {
+    //监听滚动的位置
     contenbacktop(position) {
       // console.log(position);
       this.isShow = -position.y > 1000;
-      // console.log(this.isShow);
-      // this.isshow2 = -position.y > this.tabcontrol;
+      // console.log( this.isShow )
+
+      //2.positionY和主题中的值进行比较
+      //[0, 15828, 17101, 17431]
+      //positionY 在 0 和 15828 之间  idnex = 0
+      //positionY 在 15828 和 17101 之间  idnex = 1
+      //positionY 在 17101 和 17431 之间  idnex = 2
+      //positionY 大于 17431 idnex = 3
+      // console.log(this.themescolltoY.length)
+      let length = this.themescolltoY.length;
+      for (let index = 0; index < length - 1; index++) {
+        if (
+          //方法一:
+          // this.currentIndex !== index && ((index < length - 1 &&-position.y >= this.themescolltoY[index] &&-position.y < this.themescolltoY[index + 1]) ||
+          // (index === length - 1 && -position.y >= this.themescolltoY[index]))
+          this.currentIndex !== index &&
+          -position.y >= this.themescolltoY[index] &&
+          -position.y < this.themescolltoY[index + 1]
+        ) {
+          this.currentIndex = index;
+          this.$refs.navbar.currentIndex = index;
+        }
+      }
     },
-    imgloaded(){
-     this.refresh()
-    }
+    //监听图片是否加载完成
+    imgloaded() {
+      this.refresh();
+      this.scrollYdebounceFn();
+    },
+    //监听nav-bar的点击
+    tabcontronlclick(index) {
+      this.$refs.scroll.backtop(0, -this.themescolltoY[index], 20);
+    },
+    //映射vuex中的actions
+    ...mapActions(["addCart"]),
+    //监听添加购物车事件
+    addtocart() {
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.Goods.title;
+      product.price = this.Goods.realPrice;
+      product.iid = this.iid;
+      product.desc = this.Desc.desc;
+
+      //方式一
+      //this.$store.dispatch("addCart", product).then(res => console.log(res)).catch(err => console.log(err))
+      //方式二
+
+      this.addCart(product).then(
+        (res) => {
+          this.$toast.show(res, 2000);
+        },
+        (err) => {
+          this.$toast.show(err, 2000);
+        }
+      );
+    },
   },
-  destroyed(){
-    this.$bus.$off("imageloaded", this.itemImgListener)
+  destroyed() {
+    this.$bus.$off("imageloaded", this.itemImgListener);
   },
   created() {
     this.iid = this.$route.params.iid;
@@ -121,6 +183,14 @@ export default {
     //请求推荐的数据
     getRecommendData().then((res) => {
       this.RecommendData = res.data.list;
+
+      this.scrollYdebounceFn = debounce(() => {
+        this.themescolltoY = [0];
+        this.themescolltoY.push(this.$refs.goodsparams.$el.offsetTop);
+        this.themescolltoY.push(this.$refs.comment.$el.offsetTop);
+        this.themescolltoY.push(this.$refs.recommend.$el.offsetTop);
+        this.themescolltoY.push(Number.MAX_VALUE);
+      }, 200);
     });
   },
 };

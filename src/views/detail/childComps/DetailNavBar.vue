@@ -33,8 +33,8 @@ export default {
   methods: {
     itemclick(index) {
       this.currentIndex = index;
-      console.log(this.currentIndex);
-      console.log("函数被执行了~");
+      //发出事件
+      this.$emit("tabcontronlclick",index)
     },
     backhome() {
       this.$router.go(-1);
